@@ -1,6 +1,8 @@
 package app
 
-import "github.com/Huiyicc/mihoyoapi/Cookies"
+import (
+	"github.com/Huiyicc/mihoyoapi/request"
+)
 
 const (
 	TASKS_MISSION_ID_BBS_SIGN       = 58 //讨论区签到
@@ -11,7 +13,7 @@ const (
 
 // NewAppCoreFromCookiesStr 使用cookies文本初始化
 func NewAppCoreFromCookiesStr(cookies string) (*AppCore, error) {
-	c, err := Cookies.NewAppcookies(cookies)
+	c, err := request.NewAppcookies(cookies)
 	if err != nil {
 		return nil, err
 	}
@@ -23,7 +25,7 @@ func NewAppCoreFromCookiesStr(cookies string) (*AppCore, error) {
 }
 
 // NewAppCoreFromCookies 使用cookies结构体初始化
-func NewAppCoreFromCookies(cookies *Cookies.AppCookies) (*AppCore, error) {
+func NewAppCoreFromCookies(cookies *request.AppCookies) (*AppCore, error) {
 	r := AppCore{
 		Cookies: cookies,
 	}
@@ -34,11 +36,11 @@ func NewAppCoreFromCookies(cookies *Cookies.AppCookies) (*AppCore, error) {
 // AppCore 为app类
 type AppCore struct {
 	TasksInfo *TasksList
-	Cookies   *Cookies.AppCookies
+	Cookies   *request.AppCookies
 }
 
 // Init 用于初始化类相关参数
-func (t *AppCore) Init(cookies *Cookies.AppCookies) {
+func (t *AppCore) Init(cookies *request.AppCookies) {
 	t.Cookies = cookies
 }
 

@@ -3,22 +3,22 @@ package genshin
 import (
 	"errors"
 	"fmt"
-	"github.com/Huiyicc/mihoyoapi/Cookies"
 	app2 "github.com/Huiyicc/mihoyoapi/bbs"
 	"github.com/Huiyicc/mihoyoapi/define"
+	"github.com/Huiyicc/mihoyoapi/request"
 	json "github.com/json-iterator/go"
 )
 
 type SignCore struct {
 	app     app2.BBSCore
-	cookies *Cookies.CookiesCore
+	cookies *request.CookiesCore
 }
 
-func (t *SignCore) Init(c *Cookies.CookiesCore) error {
+func (t *SignCore) Init(c *request.CookiesCore) error {
 	if err := t.app.Init(c.Region); err != nil {
 		return err
 	}
-	t.cookies = &Cookies.CookiesCore{}
+	t.cookies = &request.CookiesCore{}
 	err := t.cookies.Parse(c.GetCookies())
 	return err
 }

@@ -3,7 +3,6 @@ package app
 import (
 	"errors"
 	"fmt"
-	"github.com/Huiyicc/mihoyoapi/Cookies"
 	"github.com/Huiyicc/mihoyoapi/define"
 	"github.com/Huiyicc/mihoyoapi/request"
 	"strconv"
@@ -20,9 +19,10 @@ func (t *AppCore) Login() (string, error) {
 	return t.Cookies.GetCookies(), nil
 }
 func (t *AppCore) login1() error {
-	requ := request.UrlMap[define.MIHOYOAPP_API_LOGINA]
+	requ := request.UrlMap[define.MIHOYOAPP_API_LOGINA].Copy()
 	requ.Query = fmt.Sprintf(requ.Query, t.Cookies.LoginTicket)
-	data, err := t.httpGet(requ, 1, nil)
+	cli := request.NewClient(t.Cookies)
+	data, err := cli.Get(requ, 1, nil)
 	if err != nil {
 		return err
 	}
@@ -35,9 +35,10 @@ func (t *AppCore) login1() error {
 	return nil
 }
 func (t *AppCore) login2() error {
-	requ := request.UrlMap[define.MIHOYOAPP_API_LOGINB]
+	requ := request.UrlMap[define.MIHOYOAPP_API_LOGINB].Copy()
 	requ.Query = fmt.Sprintf(requ.Query, t.Cookies.LoginTicket, t.Cookies.Stuid)
-	data, err := t.httpGet(requ, 1, nil)
+	cli := request.NewClient(t.Cookies)
+	data, err := cli.Get(requ, 1, nil)
 	if err != nil {
 		return err
 	}
@@ -61,7 +62,7 @@ func (t *AppCore) login2() error {
 func (t *AppCore) LoginToCookiesStr(cookies string) error {
 	var (
 		err error
-		c   Cookies.AppCookies
+		c   request.AppCookies
 	)
 	//解析token
 	if err = c.ParseForLoginApp(cookies); err != nil {

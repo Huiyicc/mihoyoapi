@@ -83,9 +83,10 @@ func (t *AppCore) Sign(bbsType string) (int, error) {
 	if !isOk {
 		return 0, errors.New("分区不存在")
 	}
-	resq := request.UrlMap[define.MIHOYOAPP_API_SIGN]
+	resq := request.UrlMap[define.MIHOYOAPP_API_SIGN].Copy()
 	resq.Body["gids"] = uris.ID
-	data, err := t.httpPost(resq, 2, nil)
+	cli := request.NewClient(t.Cookies)
+	data, err := cli.Post(resq, 2, nil)
 	if err != nil {
 		return 0, err
 	}

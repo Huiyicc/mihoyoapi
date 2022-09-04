@@ -1,9 +1,8 @@
-package Cookies
+package request
 
 import (
 	"errors"
 	"github.com/Huiyicc/mihoyoapi/define"
-	"github.com/Huiyicc/mihoyoapi/request"
 	"github.com/Huiyicc/mihoyoapi/tools"
 	json "github.com/json-iterator/go"
 	"io"
@@ -95,7 +94,7 @@ func (t *CookiesCore) Get(key string) string {
 	return t.CookiesMap[key]
 }
 
-func (t *CookiesCore) GetHeadersMap(req request.RequestStruct) map[string][]string {
+func (t *CookiesCore) GetHeadersMap(req RequestStruct) map[string][]string {
 	rm := make(map[string][]string)
 	if req.Sign {
 		rm["x-rpc-app_version"] = []string{"2.35.2"}
@@ -109,7 +108,7 @@ func (t *CookiesCore) GetHeadersMap(req request.RequestStruct) map[string][]stri
 		rm["x-rpc-channel"] = []string{"miyousheluodi"}
 		rm["x-rpc-sys_version"] = []string{"6.0.1"}
 		rm["Referer"] = []string{"https://webstatic.mihoyo.com/bbs/event/signin-ys/index.html?bbs_auth_required=true&act_id=e202009291139501&utm_source=bbs&utm_medium=mys&utm_campaign=icon"}
-		rm["DS"] = []string{request.GetDsSign()}
+		rm["DS"] = []string{GetDsSign()}
 	} else {
 		rm["x-rpc-app_version"] = []string{"2.34.1"}
 		rm["x-rpc-client_type"] = []string{"5"}
@@ -120,7 +119,7 @@ func (t *CookiesCore) GetHeadersMap(req request.RequestStruct) map[string][]stri
 		} else {
 			body = req.Body.GetData()
 		}
-		rm["DS"] = []string{request.GetDs(t.Region, req.Query, body)}
+		rm["DS"] = []string{GetDs(t.Region, req.Query, body)}
 	}
 	return rm
 }

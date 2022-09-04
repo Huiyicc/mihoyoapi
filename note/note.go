@@ -2,9 +2,9 @@ package note
 
 import (
 	"fmt"
-	"github.com/Huiyicc/mihoyoapi/Cookies"
 	"github.com/Huiyicc/mihoyoapi/bbs"
 	"github.com/Huiyicc/mihoyoapi/define"
+	"github.com/Huiyicc/mihoyoapi/request"
 	json "github.com/json-iterator/go"
 	"strconv"
 	"time"
@@ -12,14 +12,14 @@ import (
 
 type NoteCore struct {
 	app     bbs.BBSCore
-	cookies *Cookies.CookiesCore
+	cookies *request.CookiesCore
 }
 
-func (t *NoteCore) Init(c *Cookies.CookiesCore) error {
+func (t *NoteCore) Init(c *request.CookiesCore) error {
 	if err := t.app.Init(c.Region); err != nil {
 		return err
 	}
-	t.cookies = &Cookies.CookiesCore{}
+	t.cookies = &request.CookiesCore{}
 	err := t.cookies.Parse(c.GetCookies())
 	return err
 }

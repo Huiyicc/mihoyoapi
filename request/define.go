@@ -7,6 +7,14 @@ import (
 
 type BodyMap map[string]interface{}
 
+func (t BodyMap) Copy() map[string]interface{} {
+	r := make(map[string]interface{})
+	for k, v := range t {
+		r[k] = v
+	}
+	return r
+}
+
 func (t BodyMap) GetData() string {
 	data, _ := json.Marshal(t)
 	//t["body"] = string(data)
@@ -14,11 +22,19 @@ func (t BodyMap) GetData() string {
 }
 
 type RequestStruct struct {
-	Url    string
-	Query  string
-	Sign   bool
-	Body   BodyMap
-	AddMap map[string]string
+	Url   string
+	Query string
+	Sign  bool
+	Body  BodyMap
+}
+
+func (t RequestStruct) Copy() RequestStruct {
+	return RequestStruct{
+		Url:   t.Url,
+		Query: t.Query,
+		Sign:  t.Sign,
+		Body:  t.Body.Copy(),
+	}
 }
 
 var UrlMap = map[string]RequestStruct{
@@ -85,6 +101,12 @@ var UrlMap = map[string]RequestStruct{
 	define.MYSINFO_API_AVATARSKILL: {
 		Url:   "https://api-takumi.mihoyo.com/event/e20200928calculate/v1/avatarSkill/list",
 		Query: "avatar_id=%s",
+	},
+	// 获取绑定的游戏信息
+	define.MIHOYOAPP_API_BINDINGO: {
+		Url:   "https://api-takumi.mihoyo.com/binding/api/getUserGameRolesByCookie",
+		Query: "game_biz=%s",
+		Sign:  true,
 	},
 	// app登陆第一阶段
 	define.MIHOYOAPP_API_LOGINA: {

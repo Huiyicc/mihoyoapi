@@ -2,7 +2,6 @@ package bbs
 
 import (
 	"errors"
-	"github.com/Huiyicc/mihoyoapi/Cookies"
 	"github.com/Huiyicc/mihoyoapi/define"
 	"github.com/Huiyicc/mihoyoapi/request"
 	"io"
@@ -60,12 +59,12 @@ func (t *BBSCore) GetUrl(Type string) (request.RequestStruct, error) {
 		Url:   reqs.Url,
 		Query: reqs.Query,
 		Sign:  reqs.Sign,
-		Body:  reqs.Body,
+		Body:  reqs.Body.Copy(),
 	}
 	return cmp, nil
 }
 
-func (t *BBSCore) Get(r request.RequestStruct, c *Cookies.CookiesCore) ([]byte, error) {
+func (t *BBSCore) Get(r request.RequestStruct, c *request.CookiesCore) ([]byte, error) {
 	url := r.Url + "?" + r.Query
 	req, err := http.NewRequest("GET", url, nil)
 	if err != nil {
@@ -88,7 +87,7 @@ func (t *BBSCore) Get(r request.RequestStruct, c *Cookies.CookiesCore) ([]byte, 
 	return b, nil
 }
 
-func (t *BBSCore) Post(r request.RequestStruct, c *Cookies.CookiesCore) ([]byte, error) {
+func (t *BBSCore) Post(r request.RequestStruct, c *request.CookiesCore) ([]byte, error) {
 	url := r.Url
 	req, err := http.NewRequest("POST", url, strings.NewReader(r.Body.GetData()))
 	if err != nil {

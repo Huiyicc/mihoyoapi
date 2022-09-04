@@ -21,6 +21,7 @@ const (
 	MYSINFO_API_COMPUTE      = "compute"       //养成计算器
 	MYSINFO_API_AVATARSKILL  = "avatarSkill"   //角色技能
 
+	MIHOYOAPP_API_BINDINGO    = "bindInfo"   //游戏绑定信息
 	MIHOYOAPP_API_LOGINA      = "logina"     //第一阶段登陆
 	MIHOYOAPP_API_LOGINB      = "loginb"     //第二阶段登陆
 	MIHOYOAPP_API_TASKS_LIST  = "TasksList"  //获取任务列表

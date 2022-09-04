@@ -1,14 +1,14 @@
-package Cookies
+package request
 
 import (
 	"errors"
 	"github.com/Huiyicc/mihoyoapi/define"
-	"github.com/Huiyicc/mihoyoapi/request"
 	"github.com/Huiyicc/mihoyoapi/tools"
 	"strings"
 )
 
 type AppCookies struct {
+	GameUID     string
 	Region      string
 	LoginTicket string
 	Stuid       string
@@ -41,18 +41,25 @@ func (t *AppCookies) ParseForLoginTicket(cookies string) error {
 					break
 				}
 			}
+			index := strings.Index(lst[i1], "=")
+			t.CookiesMap[lst[i1][:index]] = tools.DeepCopyStr(lst[i1][index+1:])
 		}
 		if t.CookiesMap[maplist[i]] == "" {
 			return errors.New("cookies不完整")
 		}
 	}
 	t.LoginTicket = t.CookiesMap["login_ticket"]
-	//t.Stuid = t.CookiesMap["stuid"]
-	//t.Stoken = t.CookiesMap["stoken"]
+	t.Stuid = t.CookiesMap["login_uid"]
+	t.CookiesMap["stuid"] = t.Stuid
 	return nil
 }
 
-func (t *AppCookies) GetHeadersMap(req request.RequestStruct, dsType int) map[string][]string {
+func (t *AppCookies) UpdateGameInfo(Region, GameUID string) {
+	t.GameUID = GameUID
+	t.Region = Region
+}
+
+func (t *AppCookies) GetHeadersMap(req RequestStruct, dsType int) map[string][]string {
 	rm := make(map[string][]string)
 	rm["x-rpc-app_version"] = []string{"2.35.2"}
 	rm["x-rpc-client_type"] = []string{"5"}
@@ -68,11 +75,11 @@ func (t *AppCookies) GetHeadersMap(req request.RequestStruct, dsType int) map[st
 		rm["Referer"] = []string{"https://webstatic.mihoyo.com/bbs/event/signin-ys/index.html?bbs_auth_required=true&act_id=e202009291139501&utm_source=bbs&utm_medium=mys&utm_campaign=icon"}
 		switch dsType {
 		case 1:
-			rm["DS"] = []string{request.GetDsSign()}
+			rm["DS"] = []string{GetDsSign()}
 		case 2:
 			rm["x-rpc-app_version"] = []string{"2.34.1"}
 			rm["x-rpc-client_type"] = []string{"2"}
-			rm["DS"] = []string{request.GetDsSign2()}
+			rm["DS"] = []string{GetDsSign2()}
 			rm["Referer"] = []string{"https://app.mihoyo.com"}
 			rm["User-Agent"] = []string{"okhttp/4.8.0"}
 		}
@@ -85,12 +92,12 @@ func (t *AppCookies) GetHeadersMap(req request.RequestStruct, dsType int) map[st
 		}
 		switch dsType {
 		case 1:
-			rm["DS"] = []string{request.GetDs(t.Region, req.Query, body)}
+			rm["DS"] = []string{GetDs(t.Region, req.Query, body)}
 		case 2:
 			rm["x-rpc-client_type"] = []string{"2"}
 			rm["User-Agent"] = []string{"okhttp/4.8.0"}
 			rm["Referer"] = []string{"https://app.mihoyo.com"}
-			rm["DS"] = []string{request.GetDs2(req.Query, body)}
+			rm["DS"] = []string{GetDs2(req.Query, body)}
 		}
 	}
 	rm["Cookie"] = []string{t.GetCookies()}

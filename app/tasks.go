@@ -8,8 +8,9 @@ import (
 
 // GetTasksList 用于获取已完成的米游币任务列表
 func (t *AppCore) GetTasksList() (*TasksList, error) {
-	r := request.UrlMap[define.MIHOYOAPP_API_TASKS_LIST]
-	data, err := t.httpGet(r, 1, nil)
+	r := request.UrlMap[define.MIHOYOAPP_API_TASKS_LIST].Copy()
+	cli := request.NewClient(t.Cookies)
+	data, err := cli.Get(r, 1, nil)
 	if err != nil {
 		return nil, err
 	}

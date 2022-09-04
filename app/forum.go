@@ -14,9 +14,10 @@ func (t *AppCore) GetForumList(forum string) ([]AppForumInfo, error) {
 	if !isSet {
 		f.ForumID = forum
 	}
-	req := request.UrlMap[define.MIHOYOAPP_API_FORUM_LIST]
+	req := request.UrlMap[define.MIHOYOAPP_API_FORUM_LIST].Copy()
 	req.Query = fmt.Sprintf(req.Query, f.ForumID)
-	data, err := t.httpGet(req, 2, nil)
+	cli := request.NewClient(t.Cookies)
+	data, err := cli.Get(req, 2, nil)
 	if err != nil {
 		return nil, err
 	}
@@ -50,9 +51,10 @@ func (t *getForumListRequest) handleCode() error {
 
 // LookForum 看帖api
 func (t *AppCore) LookForum(postID string) (AppForumInfo, error) {
-	req := request.UrlMap[define.MIHOYOAPP_API_FORUM_LOOK]
+	req := request.UrlMap[define.MIHOYOAPP_API_FORUM_LOOK].Copy()
 	req.Query = fmt.Sprintf(req.Query, postID)
-	data, err := t.httpGet(req, 2, nil)
+	cli := request.NewClient(t.Cookies)
+	data, err := cli.Get(req, 2, nil)
 	if err != nil {
 		return AppForumInfo{}, err
 	}

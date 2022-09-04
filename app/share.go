@@ -10,9 +10,10 @@ import (
 
 // ShareForum 分享帖子
 func (t *AppCore) ShareForum(postID string) error {
-	req := request.UrlMap[define.MIHOYOAPP_API_FORUM_SHARE]
+	req := request.UrlMap[define.MIHOYOAPP_API_FORUM_SHARE].Copy()
 	req.Query = fmt.Sprintf(req.Query, postID)
-	data, err := t.httpGet(req, 1, nil)
+	cli := request.NewClient(t.Cookies)
+	data, err := cli.Get(req, 1, nil)
 	if err != nil {
 		return err
 	}
