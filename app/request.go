@@ -6,7 +6,6 @@ import (
 	json "github.com/json-iterator/go"
 	"io"
 	"net/http"
-	"net/url"
 	"strings"
 )
 
@@ -52,12 +51,12 @@ func (t *AppCore) httpPost(req request.RequestStruct, dsType int, headerFunc fun
 		cli  http.Client
 	)
 
-	ProxyURL, _ := url.Parse("http://127.0.0.1:8080")
-	cli = http.Client{
-		Transport: &http.Transport{
-			Proxy: http.ProxyURL(ProxyURL),
-		},
-	}
+	/*	ProxyURL, _ := url.Parse("http://127.0.0.1:8080")
+		cli = http.Client{
+			Transport: &http.Transport{
+				Proxy: http.ProxyURL(ProxyURL),
+			},
+		}*/
 
 	requ, err := http.NewRequest("POST", uri, strings.NewReader(req.Body.GetData()))
 	if err != nil {
