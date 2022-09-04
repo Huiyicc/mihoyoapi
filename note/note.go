@@ -41,16 +41,24 @@ func (t *NoteCore) Info() (MysNoteResponse, error) {
 	if err = t.app.SwitchCode(note.Retcode, note.Message); err != nil {
 		return MysNoteResponse{}, err
 	}
+	note.Data.Region = t.cookies.Region
+	note.Data.GameUID = t.cookies.GameUID
 	return note, nil
 }
 
 type MysNoteInfo struct {
+	GameInfo      NodeGameInfo          //游戏信息
 	Resin         NodeResinInfo         //树脂相关
 	Task          NodeTaskInfo          //委托相关
 	ResinDiscount NodeResinDiscountInfo //周本折扣相关
 	Expeditions   NodeExpeditionsInfo   //派遣相关
 	HomeCoin      NodeHomeCoinInfo      //洞天宝钱相关
 	Transformer   NodeTransformerInfo   //参变仪相关
+}
+
+type NodeGameInfo struct {
+	Region  string //服务器
+	GameUID string //游戏id
 }
 
 // NodeHomeCoinInfo 为洞天宝钱相关
@@ -166,6 +174,8 @@ func (t *MysNoteInfo) Parse(r MysNoteResponse) *MysNoteInfo {
 			Reached: r.Data.Transformer.RecoveryTime.Reached,
 		},
 	}
+	t.GameInfo.Region = r.Data.Region
+	t.GameInfo.GameUID = r.Data.GameUID
 	return t
 }
 
@@ -205,5 +215,7 @@ type MysNoteResponse struct {
 			Noticed     bool   `json:"noticed"`
 			LatestJobId string `json:"latest_job_id"`
 		} `json:"transformer"`
+		Region  string
+		GameUID string
 	} `json:"data"`
 }
