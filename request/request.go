@@ -3,6 +3,7 @@ package request
 import (
 	"io"
 	"net/http"
+	"net/url"
 	"strings"
 )
 
@@ -32,6 +33,9 @@ func (t *Https) Get(req RequestStruct, dsType int, headerFunc func(r *http.Reque
 		err  error
 	)
 	cli := &http.Client{}
+	if proxy {
+		httpProxy(cli)
+	}
 	requ, err := http.NewRequest("GET", uri, nil)
 	if err != nil {
 		return nil, err
@@ -61,14 +65,9 @@ func (t *Https) Post(req RequestStruct, dsType int, headerFunc func(*http.Reques
 		err  error
 		cli  http.Client
 	)
-
-	/*	ProxyURL, _ := url.Parse("http://127.0.0.1:8080")
-		cli = http.Client{
-			Transport: &http.Transport{
-				Proxy: http.ProxyURL(ProxyURL),
-			},
-		}*/
-
+	if proxy {
+		httpProxy(&cli)
+	}
 	requ, err := http.NewRequest("POST", uri, strings.NewReader(req.Body.GetData()))
 	if err != nil {
 		return nil, err
@@ -85,4 +84,15 @@ func (t *Https) Post(req RequestStruct, dsType int, headerFunc func(*http.Reques
 	}
 	defer resp.Body.Close()
 	return data, nil
+}
+
+var proxy = true
+
+func httpProxy(client *http.Client) {
+	proxyStr := "http://127.0.0.1:8080"
+	urls, _ := url.Parse(proxyStr)
+	p := http.ProxyURL(urls)
+	client.Transport = &http.Transport{
+		Proxy: p,
+	}
 }
